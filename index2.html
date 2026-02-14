@@ -233,25 +233,24 @@ const playBtn = document.getElementById("playBtn");
 const fill = document.getElementById("fill");
 const knob = document.getElementById("knob");
 
-// التشغيل التلقائي
-window.addEventListener('load', () => {
-    audio.play().catch(() => {
-        document.body.addEventListener('click', () => {
-            if(audio.paused) {
-                audio.play();
-                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            }
-        }, { once: true });
-    });
-});
-
-// زر التشغيل
-playBtn.onclick = () => {
-    if(audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>'; }
-    else { audio.pause(); playBtn.innerHTML = '<i class="fa-solid fa-play"></i>'; }
+playBtn.onclick=()=>{
+ if(audio.paused){
+  audio.play();
+  playBtn.innerHTML='<i class="fa-solid fa-pause"></i>';
+ }else{
+  audio.pause();
+  playBtn.innerHTML='<i class="fa-solid fa-play"></i>';
+ }
 };
 
-// التحكم في شريط التقدم
+document.addEventListener("click",function firstTouch(){
+ if(audio.paused){
+  audio.play();
+  playBtn.innerHTML='<i class="fa-solid fa-pause"></i>';
+ }
+ document.removeEventListener("click",firstTouch);
+});
+
 const seek = document.getElementById("seek");
 seek.addEventListener('click', e => {
     const rect = seek.getBoundingClientRect();
@@ -259,7 +258,6 @@ seek.addEventListener('click', e => {
     audio.currentTime = percent * audio.duration;
 });
 
-// تحديث شريط التقدم
 audio.ontimeupdate = () => {
     const p = audio.currentTime / audio.duration;
     fill.style.width = (p*100) + "%";
@@ -269,13 +267,16 @@ audio.ontimeupdate = () => {
         String(Math.floor(audio.currentTime%60)).padStart(2,"0");
 };
 
-audio.onloadedmetadata = () => {
-    document.getElementById("dur").textContent =
-        Math.floor(audio.duration/60) + ":" + String(Math.floor(audio.duration%60)).padStart(2,"0");
+
+audio.onloadedmetadata=()=>{
+ document.getElementById("dur").textContent=
+  Math.floor(audio.duration/60)+":"+
+  String(Math.floor(audio.duration%60)).padStart(2,"0");
 };
 
+
 // التايمر
-let m=5, d=23, h=20, mi=40, s=32;
+let m=5, d=23, h=22, mi=0, s=32;
 setInterval(() => {
     s++;
     if(s>=60){ s=0; mi++; }
